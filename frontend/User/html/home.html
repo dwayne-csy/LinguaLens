@@ -3,9 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - LinguaLens</title>
+    <title>User Home</title>
+
+    <style>
+        /* ✅ Put logout button in top-right */
+        .logout-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
 </head>
 <body>
+    <!-- ✅ Logout Button -->
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+
     <h1 id="welcome-text">Loading...</h1>
 
     <script src="../js/home.js"></script>

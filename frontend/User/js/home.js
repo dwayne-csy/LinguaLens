@@ -9,3 +9,9 @@ fetch('http://localhost:3000/api/v1/home')
         console.error("Error connecting to server:", err);
         document.getElementById('welcome-text').textContent = "Failed to load home page.";
     });
+
+    // ✅ Logout button logic
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    window.location.href = "../../Authentication/html/login.html";
+});
+
