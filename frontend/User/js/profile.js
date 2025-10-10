@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('address').value = data.user.address || '';
             if (data.user.profile_photo) {
                 const photo = document.getElementById('profilePhotoPreview');
-                photo.src = data.user.profile_photo;
+                photo.src = 'http://localhost:3000' + data.user.profile_photo;
                 photo.style.display = 'block';
             }
         }
@@ -33,12 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
     });
 
-    // Update profile (only require contact_number and address)
-    document.getElementById('profileForm').addEventListener('submit', (e) => {
+    // Combined update profile and photo
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('name').value;
         const contact_number = document.getElementById('contact_number').value;
         const address = document.getElementById('address').value;
+        const fileInput = document.getElementById('profile_photo_file');
 
         // Require contact_number and address if empty
         if (!contact_number.trim() || !address.trim()) {
@@ -46,43 +47,42 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        fetch('http://localhost:3000/api/profile', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ name, contact_number, address })
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-        });
-    });
+        try {
+            // First update profile details
+            const profileResponse = await fetch('http://localhost:3000/api/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ name, contact_number, address })
+            });
+            const profileData = await profileResponse.json();
 
-    // Upload profile photo
-    document.getElementById('photoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const fileInput = document.getElementById('profile_photo_file');
-        if (!fileInput.files.length) return alert('Please select a file.');
+            // Then upload photo if selected
+            if (fileInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append('profile_photo', fileInput.files[0]);
 
-        const formData = new FormData();
-        formData.append('profile_photo', fileInput.files[0]);
+                const photoResponse = await fetch('http://localhost:3000/api/profile/upload-photo', {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const photoData = await photoResponse.json();
 
-        fetch('http://localhost:3000/api/profile/upload-photo', {
-            method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}` },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-            if (data.profile_photo) {
-                const photo = document.getElementById('profilePhotoPreview');
-                photo.src = data.profile_photo;
-                photo.style.display = 'block';
+                if (photoData.profile_photo) {
+                    const photo = document.getElementById('profilePhotoPreview');
+                    photo.src = 'http://localhost:3000' + photoData.profile_photo;
+                    photo.style.display = 'block';
+                }
+                alert('Profile and photo updated successfully!');
+            } else {
+                alert(profileData.message);
             }
-        });
+        } catch (error) {
+            alert('Error updating profile. Please try again.');
+        }
     });
 
     // Logout

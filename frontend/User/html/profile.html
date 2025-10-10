@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
         .profile-container {
             max-width: 400px;
             margin: 60px auto;
@@ -29,6 +33,15 @@
         .logout-btn:hover {
             background-color: #c0392b;
         }
+        #profilePhotoPreview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            display: none;
+            border: 3px solid #3498db;
+        }
         input, textarea {
             width: 90%;
             padding: 8px;
@@ -36,21 +49,25 @@
             border-radius: 4px;
             border: 1px solid #ccc;
         }
+        input[type="file"] {
+            width: 90%;
+            padding: 8px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
         button[type="submit"] {
             background: #3498db;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 30px;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
         }
         button[type="submit"]:hover {
             background: #2980b9;
-        }
-        #profilePhotoPreview {
-            max-width: 100px;
-            margin-bottom: 10px;
-            display: none;
         }
     </style>
 </head>
@@ -60,15 +77,12 @@
         <h2>User Profile</h2>
         <img id="profilePhotoPreview" src="" alt="Profile Photo" />
         <form id="profileForm">
-        <input type="text" id="name" placeholder="Name" /><br>
-        <input type="email" id="email" placeholder="Email" readonly /><br>
-        <input type="text" id="contact_number" placeholder="Contact Number" /><br>
-        <textarea id="address" placeholder="Address"></textarea><br>
-        <button type="submit">Update Profile</button>
-        </form>
-        <form id="photoForm" enctype="multipart/form-data" style="margin-top:15px;">
-            <input type="file" id="profile_photo_file" name="profile_photo" accept="image/*" required />
-            <button type="submit">Upload Photo</button>
+            <input type="text" id="name" placeholder="Name" /><br>
+            <input type="email" id="email" placeholder="Email" readonly /><br>
+            <input type="text" id="contact_number" placeholder="Contact Number" /><br>
+            <textarea id="address" placeholder="Address" rows="3"></textarea><br>
+            <input type="file" id="profile_photo_file" name="profile_photo" accept="image/*" />
+            <button type="submit">Update Profile</button>
         </form>
     </div>
     <script src="../js/profile.js"></script>

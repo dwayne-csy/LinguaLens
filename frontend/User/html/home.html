@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Home</title>
+
+    <!-- ✅ Puter AI Script -->
+    <script src="https://js.puter.com/v2/"></script>
+
     <style>
         .logout-btn {
             position: absolute;
@@ -35,12 +39,106 @@
         .profile-btn:hover {
             background-color: #217dbb;
         }
+
+        /* ✅ Floating Chat Button */
+        #chat-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* ✅ Chat Window */
+        #chatbox-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 320px;
+            height: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+
+        #chatbox-header {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #chatbox-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        #chatbox-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        #chatbox-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+
+        #chatbox-input button {
+            width: 60px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+        }
+        .loading-dots .dots {
+    font-weight: bold;
+    animation: dotsAnimation 1s infinite;
+}
+
+@keyframes dotsAnimation {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+}
     </style>
 </head>
 <body>
     <button class="profile-btn" id="profileBtn">Profile</button>
     <button class="logout-btn" id="logoutBtn">Logout</button>
     <h1 id="welcome-text">Loading...</h1>
+
+    <!-- ✅ Floating Chat Button -->
+    <button id="chat-toggle-btn">💬</button>
+
+    <!-- ✅ Chat Window -->
+    <div id="chatbox-container">
+        <div id="chatbox-header">LinguaLens AI</div>
+        <div id="chatbox-messages"></div>
+        <div id="chatbox-input">
+            <input type="text" id="userMessage" placeholder="Type a message..." />
+            <button id="sendMessageBtn">Send</button>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -50,5 +148,6 @@
         });
     </script>
     <script src="../js/home.js"></script>
+    <script src="../js/homeChatbot.js"></script>
 </body>
 </html>

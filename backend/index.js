@@ -38,12 +38,13 @@ const profileRoutes = require('./routes/profile');
 
 
 
+
+
 app.use('/api/v1', userRoutes);
 app.use('/api/v1', homeRoutes);
 app.use('/api/picturetotext', pictureToTextRoutes);
 app.use('/api/picturetotexthistory', pictureToTextHistoryRoutes);
 app.use('/api/profile', profileRoutes);
-;
 
 
 

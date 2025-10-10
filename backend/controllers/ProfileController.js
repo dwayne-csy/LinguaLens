@@ -24,15 +24,15 @@ const getProfile = (req, res) => {
 // Update user profile
 const updateProfile = (req, res) => {
     const userId = req.user.id;
-    const { name, email, profile_photo, contact_number, address } = req.body;
+    const { name, contact_number, address } = req.body;
 
-    if (!name || !email) {
-        return res.status(400).json({ message: 'Name and email are required.' });
+    if (!contact_number || !address) {
+        return res.status(400).json({ message: 'Contact number and address are required.' });
     }
 
     connection.query(
-        'UPDATE users SET name = ?, email = ?, profile_photo = ?, contact_number = ?, address = ? WHERE id = ?',
-        [name, email, profile_photo, contact_number, address, userId],
+        'UPDATE users SET name = ?, contact_number = ?, address = ? WHERE id = ?',
+        [name, contact_number, address, userId],
         (err, result) => {
             if (err) {
                 console.error('Profile update error:', err);
@@ -65,3 +65,5 @@ const uploadProfilePhoto = (req, res) => {
 };
 
 module.exports = { getProfile, updateProfile, uploadProfilePhoto };
+
+
