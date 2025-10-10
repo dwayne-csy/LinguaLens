@@ -1,0 +1,17 @@
+backend/node_modules/
+
+
+
+# production
+
+
+# misc
+/config
+
+/images
+
+
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

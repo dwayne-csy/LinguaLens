@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Home</title>
+    <style>
+        .logout-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        .profile-btn {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .profile-btn:hover {
+            background-color: #217dbb;
+        }
+    </style>
+</head>
+<body>
+    <button class="profile-btn" id="profileBtn">Profile</button>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+    <h1 id="welcome-text">Loading...</h1>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('profileBtn').addEventListener('click', function() {
+                window.location.href = "profile.html";
+            });
+        });
+    </script>
+    <script src="../js/home.js"></script>
+</body>
+</html>
