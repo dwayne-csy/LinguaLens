@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text to Speech</title>
+    <script src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+    <h2>Text to Speech</h2>
+    
+    <textarea id="textInput" placeholder="Enter text here..." rows="5" cols="40"></textarea>
+    <br><br>
+
+    <!-- ✅ ENGINE DROPDOWN -->
+    <label for="engineSelect">Choose Voice Engine:</label>
+    <select id="engineSelect">
+        <option value="standard">Standard Engine</option>
+        <option value="neural">Neural Engine</option>
+        <option value="generative">Generative Engine</option>
+    </select>
+    <br><br>
+
+    <button id="speakBtn">Speak</button>
+
+    <!-- ✅ Loading Message -->
+    <p id="loadingMessage" style="display:none;">Loading...</p>
+
+    <script src="../js/txttospeech.js"></script>
+</body>
+</html>

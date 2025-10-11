@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text-to-Speech Translator</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin: 10px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        #loadingMessage {
+            margin-top: 10px;
+            color: green;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Text-to-Speech Translator</h2>
+    <textarea id="textInput" placeholder="Enter text in any language..."></textarea>
+    <br>
+    <select id="engineSelect">
+        <option value="standard">Standard Engine</option>
+        <option value="neural">Neural Engine</option>
+        <option value="generative">Generative Engine</option>
+    </select>
+    <br>
+    <button id="speakBtn">Speak</button>
+    <p id="loadingMessage">Loading...</p>
+
+    <script src="https://js.puter.com/v2/"></script>
+    <script src="../js/ttospeechtranslator.js"></script>
+</body>
+</html>
