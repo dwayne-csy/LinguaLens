@@ -1,4 +1,4 @@
-// ✅ List of all supported languages by Translatte (excluding Filipino/Tagalog)
+// ✅ List of all supported languages by Translatte
 const supportedLanguages = {
     "af": "Afrikaans",
     "sq": "Albanian",
@@ -24,6 +24,7 @@ const supportedLanguages = {
     "en": "English",
     "eo": "Esperanto",
     "et": "Estonian",
+    "tl": "Filipino",
     "fi": "Finnish",
     "fr": "French",
     "fy": "Frisian",

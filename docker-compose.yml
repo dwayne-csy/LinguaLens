@@ -1,5 +1,0 @@
-services:
-  libretranslate:
-    image: libretranslate/libretranslate
-    ports:
-      - "5000:5000"
