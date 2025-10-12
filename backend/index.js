@@ -33,6 +33,7 @@ const homeRoutes = require('./routes/home');
 const pictureToTextRoutes = require('./routes/picturetotext');
 const pictureToTextHistoryRoutes = require('./routes/picturetotexthistory');
 const profileRoutes = require('./routes/profile');
+const translateRoutes = require('./routes/translateRoutes');
 
 
 
@@ -45,6 +46,8 @@ app.use('/api/v1', homeRoutes);
 app.use('/api/picturetotext', pictureToTextRoutes);
 app.use('/api/picturetotexthistory', pictureToTextHistoryRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api', translateRoutes);
+
 
 
 
