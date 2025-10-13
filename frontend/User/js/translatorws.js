@@ -2,7 +2,8 @@
 const supportedLanguages = {
     "en": "English", "es": "Spanish", "fr": "French", "de": "German", "it": "Italian",
     "pt": "Portuguese", "ru": "Russian", "ja": "Japanese", "ko": "Korean",
-    "ar": "Arabic", "hi": "Hindi", "nl": "Dutch", "pl": "Polish", "tr": "Turkish"
+    "ar": "Arabic", "hi": "Hindi", "nl": "Dutch", "pl": "Polish", "tr": "Turkish",
+    "tl": "Filipino"
 };
 
 // ✅ Language code mapping for TTS (Puter.js uses different codes)
@@ -19,7 +20,8 @@ let speakInputBtn, speakOutputBtn;
 // ✅ Translation state
 let translationTimeout = null;
 const TRANSLATION_DELAY = 500; // Delay in ms before auto-translating
-let currentDetectedLang = null;
+let currentDetectedInputLang = null; // Auto-detected input language
+let currentDetectedOutputLang = null; // Auto-detected output language
 let currentOutputText = '';
 
 // ✅ Initialize the application
@@ -160,7 +162,8 @@ function resetToAutoDetectMode() {
     if (speakOutputBtn) {
         resultDiv.appendChild(speakOutputBtn);
     }
-    currentDetectedLang = null;
+    currentDetectedInputLang = null;
+    currentDetectedOutputLang = null;
     currentOutputText = '';
 }
 
@@ -225,7 +228,7 @@ async function translateText() {
     }
 }
 
-// ✅ Display translation result
+// ✅ Display translation result with auto-detected input language
 function displayTranslation(translatedText, detectedLang) {
     if (!resultDiv || !autoDetectBadge || !detectedLanguageDiv || !detectedLangText) return;
     
@@ -234,14 +237,15 @@ function displayTranslation(translatedText, detectedLang) {
     
     // Store for TTS
     currentOutputText = translatedText;
-    currentDetectedLang = detectedLang;
+    currentDetectedInputLang = detectedLang;
+    currentDetectedOutputLang = langSelect.value;
     
     // Re-append the speak button
     if (speakOutputBtn) {
         resultDiv.appendChild(speakOutputBtn);
     }
     
-    // Update auto-detect badge with detected language
+    // Update auto-detect badge with detected input language
     if (detectedLang && supportedLanguages[detectedLang]) {
         const detectedLangName = supportedLanguages[detectedLang];
         autoDetectBadge.textContent = detectedLangName;
@@ -251,6 +255,8 @@ function displayTranslation(translatedText, detectedLang) {
         detectedLangText.textContent = detectedLangName;
         detectedLanguageDiv.style.display = 'block';
     } else {
+        autoDetectBadge.textContent = 'Auto Detect';
+        autoDetectBadge.className = 'auto-detect-badge auto-mode';
         detectedLanguageDiv.style.display = 'none';
     }
 }
@@ -284,11 +290,11 @@ async function speakText(type) {
     
     if (type === 'input') {
         text = textInput.value.trim();
-        langCode = currentDetectedLang || 'en';
+        langCode = currentDetectedInputLang || 'en';
         button = speakInputBtn;
     } else {
         text = currentOutputText;
-        langCode = langSelect.value;
+        langCode = currentDetectedOutputLang || langSelect.value;
         button = speakOutputBtn;
     }
     
