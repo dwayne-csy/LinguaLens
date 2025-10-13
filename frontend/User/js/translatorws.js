@@ -1,35 +1,26 @@
 // ✅ List of all supported languages by Translatte
 const supportedLanguages = {
-    "af": "Afrikaans", "sq": "Albanian", "am": "Amharic", "ar": "Arabic", "hy": "Armenian",
-    "az": "Azerbaijani", "eu": "Basque", "be": "Belarusian", "bn": "Bengali", "bs": "Bosnian",
-    "bg": "Bulgarian", "ca": "Catalan", "ceb": "Cebuano", "ny": "Chichewa", "zh-cn": "Chinese (Simplified)",
-    "zh-tw": "Chinese (Traditional)", "co": "Corsican", "hr": "Croatian", "cs": "Czech", "da": "Danish",
-    "nl": "Dutch", "en": "English", "eo": "Esperanto", "et": "Estonian", "tl": "Filipino",
-    "fi": "Finnish", "fr": "French", "fy": "Frisian", "gl": "Galician", "ka": "Georgian",
-    "de": "German", "el": "Greek", "gu": "Gujarati", "ht": "Haitian Creole", "ha": "Hausa",
-    "haw": "Hawaiian", "iw": "Hebrew", "hi": "Hindi", "hmn": "Hmong", "hu": "Hungarian",
-    "is": "Icelandic", "ig": "Igbo", "id": "Indonesian", "ga": "Irish", "it": "Italian",
-    "ja": "Japanese", "jw": "Javanese", "kn": "Kannada", "kk": "Kazakh", "km": "Khmer",
-    "rw": "Kinyarwanda", "ko": "Korean", "ku": "Kurdish (Kurmanji)", "ky": "Kyrgyz", "lo": "Lao",
-    "la": "Latin", "lv": "Latvian", "lt": "Lithuanian", "lb": "Luxembourgish", "mk": "Macedonian",
-    "mg": "Malagasy", "ms": "Malay", "ml": "Malayalam", "mt": "Maltese", "mi": "Maori",
-    "mr": "Marathi", "mn": "Mongolian", "my": "Myanmar (Burmese)", "ne": "Nepali", "no": "Norwegian",
-    "or": "Odia", "ps": "Pashto", "fa": "Persian", "pl": "Polish", "pt": "Portuguese",
-    "pa": "Punjabi", "ro": "Romanian", "ru": "Russian", "sm": "Samoan", "gd": "Scots Gaelic",
-    "sr": "Serbian", "st": "Sesotho", "sn": "Shona", "sd": "Sindhi", "si": "Sinhala",
-    "sk": "Slovak", "sl": "Slovenian", "so": "Somali", "es": "Spanish", "su": "Sundanese",
-    "sw": "Swahili", "sv": "Swedish", "tg": "Tajik", "ta": "Tamil", "tt": "Tatar",
-    "te": "Telugu", "th": "Thai", "tr": "Turkish", "tk": "Turkmen", "uk": "Ukrainian",
-    "ur": "Urdu", "ug": "Uyghur", "uz": "Uzbek", "vi": "Vietnamese", "cy": "Welsh",
-    "xh": "Xhosa", "yi": "Yiddish", "yo": "Yoruba", "zu": "Zulu"
+    "en": "English", "es": "Spanish", "fr": "French", "de": "German", "it": "Italian",
+    "pt": "Portuguese", "ru": "Russian", "ja": "Japanese", "ko": "Korean",
+    "ar": "Arabic", "hi": "Hindi", "nl": "Dutch", "pl": "Polish", "tr": "Turkish"
+};
+
+// ✅ Language code mapping for TTS (Puter.js uses different codes)
+const languageToTTSCode = {
+    "en": "en-US", "es": "es-ES", "fr": "fr-FR", "de": "de-DE", "it": "it-IT",
+    "pt": "pt-PT", "ru": "ru-RU", "ja": "ja-JP", "ko": "ko-KR",
+    "ar": "ar-SA", "hi": "hi-IN", "nl": "nl-NL", "pl": "pl-PL", "tr": "tr-TR"
 };
 
 // ✅ DOM Elements
 let langSelect, textInput, resultDiv, charCount, detectedLanguageDiv, detectedLangText, autoDetectBadge;
+let speakInputBtn, speakOutputBtn;
 
 // ✅ Translation state
 let translationTimeout = null;
 const TRANSLATION_DELAY = 500; // Delay in ms before auto-translating
+let currentDetectedLang = null;
+let currentOutputText = '';
 
 // ✅ Initialize the application
 function init() {
@@ -54,6 +45,8 @@ function initializeDOMElements() {
     detectedLanguageDiv = document.getElementById('detectedLanguage');
     detectedLangText = document.getElementById('detectedLangText');
     autoDetectBadge = document.getElementById('autoDetectBadge');
+    speakInputBtn = document.getElementById('speakInput');
+    speakOutputBtn = document.getElementById('speakOutput');
     
     console.log('DOM Elements found:', {
         langSelect: !!langSelect,
@@ -62,12 +55,15 @@ function initializeDOMElements() {
         charCount: !!charCount,
         detectedLanguageDiv: !!detectedLanguageDiv,
         detectedLangText: !!detectedLangText,
-        autoDetectBadge: !!autoDetectBadge
+        autoDetectBadge: !!autoDetectBadge,
+        speakInputBtn: !!speakInputBtn,
+        speakOutputBtn: !!speakOutputBtn
     });
     
     // Check if all required elements exist
     const elementsExist = langSelect && textInput && resultDiv && charCount && 
-                         detectedLanguageDiv && detectedLangText && autoDetectBadge;
+                         detectedLanguageDiv && detectedLangText && autoDetectBadge &&
+                         speakInputBtn && speakOutputBtn;
     
     if (!elementsExist) {
         console.error('Some DOM elements are missing. Please check your HTML structure.');
@@ -122,6 +118,11 @@ function setupEventListeners() {
     });
     console.log('Added change event listener to langSelect');
     
+    // Text-to-speech buttons
+    speakInputBtn.addEventListener('click', () => speakText('input'));
+    speakOutputBtn.addEventListener('click', () => speakText('output'));
+    console.log('Added TTS event listeners');
+    
     console.log('Event listeners setup complete');
 }
 
@@ -156,6 +157,11 @@ function resetToAutoDetectMode() {
     autoDetectBadge.className = 'auto-detect-badge auto-mode';
     detectedLanguageDiv.style.display = 'none';
     resultDiv.innerHTML = '<span class="output-placeholder">Translation will appear here...</span>';
+    if (speakOutputBtn) {
+        resultDiv.appendChild(speakOutputBtn);
+    }
+    currentDetectedLang = null;
+    currentOutputText = '';
 }
 
 // ✅ Update character count
@@ -196,7 +202,7 @@ async function translateText() {
         // Show loading state
         setLoadingState(true);
         
-        const response = await fetch('http://localhost:3000/translator/translate', {
+        const response = await fetch('http://localhost:3000/api/translate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -226,6 +232,15 @@ function displayTranslation(translatedText, detectedLang) {
     resultDiv.innerHTML = '';
     resultDiv.textContent = translatedText;
     
+    // Store for TTS
+    currentOutputText = translatedText;
+    currentDetectedLang = detectedLang;
+    
+    // Re-append the speak button
+    if (speakOutputBtn) {
+        resultDiv.appendChild(speakOutputBtn);
+    }
+    
     // Update auto-detect badge with detected language
     if (detectedLang && supportedLanguages[detectedLang]) {
         const detectedLangName = supportedLanguages[detectedLang];
@@ -245,6 +260,9 @@ function showError(message) {
     if (!resultDiv || !detectedLanguageDiv) return;
     
     resultDiv.innerHTML = `<span style="color: #e53e3e;">${message}</span>`;
+    if (speakOutputBtn) {
+        resultDiv.appendChild(speakOutputBtn);
+    }
     detectedLanguageDiv.style.display = 'none';
 }
 
@@ -254,6 +272,63 @@ function setLoadingState(isLoading) {
     
     if (isLoading) {
         resultDiv.innerHTML = '<span class="loading-indicator">Translating...</span>';
+        if (speakOutputBtn) {
+            resultDiv.appendChild(speakOutputBtn);
+        }
+    }
+}
+
+// ✅ Text-to-Speech function
+async function speakText(type) {
+    let text, langCode, button;
+    
+    if (type === 'input') {
+        text = textInput.value.trim();
+        langCode = currentDetectedLang || 'en';
+        button = speakInputBtn;
+    } else {
+        text = currentOutputText;
+        langCode = langSelect.value;
+        button = speakOutputBtn;
+    }
+    
+    if (!text) {
+        console.log('No text to speak');
+        return;
+    }
+    
+    if (text.length > 3000) {
+        alert('Text is too long for speech. Please use text under 3000 characters.');
+        return;
+    }
+    
+    // Get the appropriate language code for TTS
+    const ttsLangCode = languageToTTSCode[langCode] || 'en-US';
+    
+    console.log(`Speaking with language: ${ttsLangCode}`);
+    
+    try {
+        // Add playing animation
+        button.classList.add('playing');
+        
+        // Use Puter.js text-to-speech
+        const audio = await puter.ai.txt2speech(text, {
+            voice: "Joanna",
+            engine: "neural",
+            language: ttsLangCode
+        });
+        
+        audio.play();
+        
+        // Remove animation when audio ends
+        audio.addEventListener('ended', () => {
+            button.classList.remove('playing');
+        });
+        
+    } catch (error) {
+        console.error('TTS Error:', error);
+        button.classList.remove('playing');
+        alert('Text-to-speech failed. Please try again.');
     }
 }
 

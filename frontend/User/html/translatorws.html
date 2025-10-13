@@ -120,6 +120,7 @@
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             padding: 15px;
+            padding-bottom: 50px;
             font-size: 16px;
             resize: none;
             outline: none;
@@ -147,15 +148,49 @@
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             padding: 15px;
+            padding-bottom: 50px;
             background: white;
             font-size: 16px;
             line-height: 1.5;
             color: #2d3748;
+            position: relative;
         }
         
         .output-placeholder {
             color: #a0aec0;
             font-style: italic;
+        }
+        
+        .speak-button {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 5px;
+            transition: transform 0.2s ease;
+            opacity: 0.6;
+        }
+        
+        .speak-button:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        .speak-button:active {
+            transform: scale(0.95);
+        }
+        
+        .speak-button.playing {
+            opacity: 1;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
         
         .detected-language {
@@ -185,6 +220,8 @@
     </style>
 </head>
 <body>
+    <script src="https://js.puter.com/v2/"></script>
+    
     <div class="translator-container">
         <div class="header">
             <h1>LinguaLens</h1>
@@ -204,6 +241,7 @@
                         placeholder="Type text here..."
                         maxlength="5000"
                     ></textarea>
+                    <button id="speakInput" class="speak-button" title="Speak input text">🔊</button>
                     <div id="charCount" class="char-count">0/5000</div>
                 </div>
             </div>
@@ -217,6 +255,7 @@
                 
                 <div id="result" class="output-text">
                     <span class="output-placeholder">Translation will appear here...</span>
+                    <button id="speakOutput" class="speak-button" title="Speak translation">🔊</button>
                 </div>
                 
                 <div id="detectedLanguage" class="detected-language" style="display: none;">
@@ -226,6 +265,6 @@
         </div>
     </div>
 
-    <script src="../js/translator.js"></script>
+    <script src="../js/translatorws.js"></script>
 </body>
 </html>
