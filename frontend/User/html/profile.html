@@ -17,6 +17,7 @@
             background: #f9f9f9;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             text-align: center;
+            position: relative;
         }
         .logout-btn {
             position: absolute;
@@ -32,6 +33,21 @@
         }
         .logout-btn:hover {
             background-color: #c0392b;
+        }
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .back-btn:hover {
+            background-color: #2980b9;
         }
         #profilePhotoPreview {
             width: 120px;
@@ -73,6 +89,7 @@
 </head>
 <body>
     <div class="profile-container">
+        <button class="back-btn" onclick="window.location.href='home.html'">Back</button>
         <h2>User Profile</h2>
         <img id="profilePhotoPreview" src="" alt="Profile Photo" />
         <form id="profileForm">

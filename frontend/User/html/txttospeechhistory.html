@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text-to-Speech History</title>
+</head>
+<body>
+    <h2>Your Text-to-Speech History</h2>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Text</th>
+                <th>Engine Used</th>
+                <th>Date & Time</th>
+            </tr>
+        </thead>
+        <tbody id="ttsHistoryTableBody">
+            <!-- History rows will be added here -->
+        </tbody>
+    </table>
+
+    <p id="noHistoryMessage" style="display:none;">No history found.</p>
+
+    <script src="../js/txttospeechhistory.js"></script>
+</body>
+</html>

@@ -4,11 +4,25 @@ const chatboxContainer = document.getElementById('chatbox-container');
 const chatMessages = document.getElementById('chatbox-messages');
 const userMessageInput = document.getElementById('userMessage');
 const sendMessageBtn = document.getElementById('sendMessageBtn');
+const newChatBtn = document.getElementById('newChatBtn');
 
 chatToggleBtn.addEventListener('click', () => {
     chatboxContainer.style.display =
         chatboxContainer.style.display === 'flex' ? 'none' : 'flex';
     chatboxContainer.style.flexDirection = 'column';
+});
+
+// ✅ Clear chat - New Chat
+newChatBtn.addEventListener('click', () => {
+    chatMessages.innerHTML = '';
+});
+
+// ✅ Shift + Enter = New Line
+userMessageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault(); // Prevents newline
+        sendMessageBtn.click();
+    }
 });
 
 // ✅ Add message in Messenger style
@@ -25,15 +39,14 @@ function addMessage(sender, message, isUser = false) {
     msgBubble.style.maxWidth = '70%';
     msgBubble.style.fontSize = '14px';
     msgBubble.style.wordWrap = 'break-word';
+    msgBubble.style.whiteSpace = 'pre-wrap';
 
     if (isUser) {
-        // ✅ User message (right + blue)
         msgWrapper.style.justifyContent = 'flex-end';
         msgBubble.style.backgroundColor = '#3498db';
         msgBubble.style.color = '#fff';
         msgBubble.style.borderBottomRightRadius = '3px';
     } else {
-        // ✅ AI message (left + icon + white)
         msgWrapper.style.justifyContent = 'flex-start';
 
         const icon = document.createElement('img');
@@ -55,7 +68,7 @@ function addMessage(sender, message, isUser = false) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// ✅ Loading animation while AI responds
+// ✅ Add Loading
 function addLoadingMessage() {
     const loadingMsg = document.createElement('div');
     loadingMsg.style.display = 'flex';
@@ -109,13 +122,10 @@ sendMessageBtn.addEventListener('click', async () => {
     addMessage('You', message, true);
     userMessageInput.value = '';
 
-    // ✅ Show loading
     const { loadingMsg, interval } = addLoadingMessage();
 
     try {
         const aiReply = await puter.ai.chat(message);
-
-        // ✅ Remove loading and show AI reply
         clearInterval(interval);
         chatMessages.removeChild(loadingMsg);
         addMessage('AI', aiReply || 'No response', false);

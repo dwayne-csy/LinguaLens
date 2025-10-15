@@ -35,6 +35,8 @@ const pictureToTextHistoryRoutes = require('./routes/picturetotexthistory');
 const profileRoutes = require('./routes/profile');
 const translateRoutes = require('./routes/translatewsRoutes');
 const translatorRoutes = require('./routes/translatorRoutes');
+const txtToSpeechRoutes = require('./routes/txttospeech'); // ✅ adjust path if needed
+
 
 
 
@@ -52,6 +54,7 @@ app.use('/api/picturetotexthistory', pictureToTextHistoryRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api', translateRoutes);
 app.use('/translator', translatorRoutes);
+app.use('/api', txtToSpeechRoutes);
 
 
 

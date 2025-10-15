@@ -130,16 +130,28 @@
     <!-- ✅ Floating Chat Button -->
     <button id="chat-toggle-btn">💬</button>
 
-    <!-- ✅ Chat Window -->
-    <div id="chatbox-container">
-        <div id="chatbox-header">LinguaLens AI</div>
-        <div id="chatbox-messages"></div>
-        <div id="chatbox-input">
-            <input type="text" id="userMessage" placeholder="Type a message..." />
-            <button id="sendMessageBtn">Send</button>
-        </div>
+<div id="chatbox-container">
+    <div id="chatbox-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>LinguaLens AI</span>
+        <!-- ✅ New Chat Button -->
+        <button id="newChatBtn" style="background:none; border:none; color:white; font-size:14px; cursor:pointer;">
+            ⟳ New Chat
+        </button>
     </div>
 
+    <div id="chatbox-messages"></div>
+
+    <div id="chatbox-input" style="display: flex; align-items: center;">
+
+        <!-- ✅ Textarea for Shift+Enter (no + button anymore) -->
+        <textarea id="userMessage" placeholder="Type a message..." 
+            style="flex:1; padding:10px; border:none; outline:none; resize:none; height:40px;"></textarea>
+
+        <button id="sendMessageBtn" style="width:60px; border:none; background-color:#3498db; color:white; cursor:pointer; font-size:20px;">
+            ➤
+        </button>
+    </div>
+</div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('profileBtn').addEventListener('click', function() {

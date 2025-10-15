@@ -1,5 +1,12 @@
 // frontend/user/js/home.js
 
+const token = localStorage.getItem('token');
+const userId = localStorage.getItem('userId');
+
+if (!token || !userId) {
+    window.location.href = "../../Authentication/html/login.html";
+}
+
 fetch('http://localhost:3000/api/v1/home')
     .then(response => response.json())
     .then(data => {

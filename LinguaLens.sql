@@ -18,4 +18,10 @@ CREATE TABLE extracted_texts (
 
 );
 
-   
+CREATE TABLE tts_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    text_content TEXT NOT NULL,
+    engine_used VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
