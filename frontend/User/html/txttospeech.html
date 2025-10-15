@@ -2,29 +2,350 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Text to Speech</title>
+    <title>LinguaLens Text to Speech</title>
     <script src="https://js.puter.com/v2/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .tts-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #add8e6;
+            color: #2d3748;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .language-dropdown {
+            padding: 8px 14px;
+            border: 2px solid #90c9e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            color: #2d3748;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .language-dropdown:hover {
+            border-color: #7ab8d4;
+            background: #f7fafc;
+        }
+        
+        .language-dropdown option:first-child {
+            color: #718096;
+            font-style: italic;
+        }
+        
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .input-section, .control-section {
+            padding: 25px;
+        }
+        
+        .input-section {
+            background: #f7fafc;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+        
+        .text-area-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        
+        textarea:focus {
+            border-color: #4299e1;
+        }
+        
+        .char-count {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            color: #a0aec0;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .control-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .control-group label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+        
+        .engine-select {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            color: #2d3748;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .engine-select:hover {
+            border-color: #cbd5e0;
+        }
+        
+        .engine-select:focus {
+            border-color: #4299e1;
+        }
+        
+        .speak-btn {
+            padding: 16px 32px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .speak-btn:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+        }
+        
+        .speak-btn:active {
+            transform: translateY(0);
+        }
+        
+        .speak-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading-message {
+            padding: 12px;
+            background: #bee3f8;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #2c5282;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .engine-info {
+            padding: 15px;
+            background: #edf2f7;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .engine-info-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            textarea {
+                height: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Text to Speech</h2>
-    
-    <textarea id="textInput" placeholder="Enter text here..." rows="5" cols="40"></textarea>
-    <br><br>
+    <div class="tts-container">
+        <div class="header">
+            <h1>Text to Speech</h1>
+            <select id="languageInfo" class="language-dropdown">
+                <option value="" selected disabled>Languages Supported</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="ar">Arabic</option>
+                <option value="hi">Hindi</option>
+                <option value="nl">Dutch</option>
+                <option value="pl">Polish</option>
+                <option value="tr">Turkish</option>
+            </select>
+        </div>
+        
+        <div class="content-area">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="section-header">
+                    <span class="section-label">Input Text</span>
+                </div>
+                
+                <div class="text-area-container">
+                    <textarea 
+                        id="textInput" 
+                        placeholder="Enter text here..."
+                        maxlength="5000"
+                    ></textarea>
+                    <div id="charCount" class="char-count">0/5000</div>
+                </div>
+            </div>
+            
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="control-group">
+                    <label for="engineSelect">Voice Engine</label>
+                    <select id="engineSelect" class="engine-select">
+                        <option value="standard">Standard Engine</option>
+                        <option value="neural">Neural Engine</option>
+                        <option value="generative">Generative Engine</option>
+                    </select>
+                </div>
+                
+                <button id="speakBtn" class="speak-btn">
+                    🔊 Speak
+                </button>
+                
+                <div id="loadingMessage" class="loading-message" style="display:none;">
+                    Processing audio...
+                </div>
+                
+                <div class="engine-info">
+                    <div class="engine-info-title">Engine Info</div>
+                    <div id="engineDescription">
+                        Select a voice engine to see details
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- ✅ ENGINE DROPDOWN -->
-    <label for="engineSelect">Choose Voice Engine:</label>
-    <select id="engineSelect">
-        <option value="standard">Standard Engine</option>
-        <option value="neural">Neural Engine</option>
-        <option value="generative">Generative Engine</option>
-    </select>
-    <br><br>
-
-    <button id="speakBtn">Speak</button>
-
-    <!-- ✅ Loading Message -->
-    <p id="loadingMessage" style="display:none;">Loading...</p>
-
+    <script>
+        // Character counter
+        const textInput = document.getElementById('textInput');
+        const charCount = document.getElementById('charCount');
+        const engineSelect = document.getElementById('engineSelect');
+        const engineDescription = document.getElementById('engineDescription');
+        
+        textInput.addEventListener('input', () => {
+            const count = textInput.value.length;
+            charCount.textContent = `${count}/5000`;
+        });
+        
+        // Engine descriptions
+        const engineInfo = {
+            'standard': 'Basic text-to-speech with clear pronunciation. Fast and efficient.',
+            'neural': 'Advanced AI voice with natural intonation and rhythm. More human-like.',
+            'generative': 'State-of-the-art voice generation with the most realistic speech quality.'
+        };
+        
+        engineSelect.addEventListener('change', () => {
+            engineDescription.textContent = engineInfo[engineSelect.value];
+        });
+        
+        // Initialize with standard engine description
+        engineDescription.textContent = engineInfo['standard'];
+        
+        // Keep language dropdown at default (non-functional, just for display)
+        const languageInfo = document.getElementById('languageInfo');
+        languageInfo.addEventListener('change', () => {
+            // Reset to default after showing selection
+            setTimeout(() => {
+                languageInfo.value = '';
+            }, 1000);
+        });
+    </script>
     <script src="../js/txttospeech.js"></script>
 </body>
 </html>
