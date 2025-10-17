@@ -1,0 +1,151 @@
+<!-- LinguaLens/frontend/User/html/txttospeechwt.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LinguaLens — Text to Speech (with Translate)</title>
+
+  <!-- Puter SDK -->
+  <script src="https://js.puter.com/v2/"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #ffffff;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 900px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      overflow: hidden;
+      background: white;
+    }
+
+    .header {
+      background: #add8e6;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header h2 { margin: 0; font-size: 20px; }
+
+    .body {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+    }
+
+    .left textarea {
+      width: 100%;
+      height: 260px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      padding: 12px;
+      font-size: 15px;
+      resize: none;
+    }
+
+    .right .group { margin-bottom: 14px; }
+    label { display:block; margin-bottom:6px; color:#475569; font-weight:500; }
+    select, button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
+
+    .speak-btn {
+      background: #4299e1;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .speak-btn:disabled { background: #cbd5e0; cursor: not-allowed; }
+
+    .status {
+      margin-top: 10px;
+      font-style: italic;
+      color: #2d3748;
+    }
+
+    @media (max-width: 860px) {
+      .body { grid-template-columns: 1fr; }
+      .right { order: 2; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h2>Text → Translate → Speak</h2>
+      <div style="color:#2d3748; font-size:14px;">Type in any supported language. Choose the target language and click Speak.</div>
+    </div>
+
+    <div class="body">
+      <div class="left">
+        <label for="inputText">Input Text</label>
+        <textarea id="inputText" maxlength="5000" placeholder="Type or paste text here (e.g. Japanese text)"></textarea>
+        <div style="margin-top:8px; color:#718096; font-size:13px;" id="charCount">0/5000</div>
+      </div>
+
+      <div class="right">
+        <div class="group">
+          <label for="targetLang">Speak in (target language)</label>
+          <select id="targetLang">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ru">Russian</option>
+            <option value="ja">Japanese</option>
+            <option value="ko">Korean</option>
+            <option value="ar">Arabic</option>
+            <option value="hi">Hindi</option>
+            <option value="nl">Dutch</option>
+            <option value="pl">Polish</option>
+            <option value="tr">Turkish</option>
+          </select>
+        </div>
+
+        <div class="group">
+          <label for="engineSelect">Voice Engine</label>
+          <select id="engineSelect">
+            <option value="standard">Standard Engine</option>
+            <option value="neural">Neural Engine</option>
+            <option value="generative">Generative Engine</option>
+          </select>
+        </div>
+
+        <div class="group">
+          <button id="speakBtn" class="speak-btn">🔊 Speak (translate → speak)</button>
+        </div>
+
+        <div class="group">
+          <div id="loading" class="status" style="display:none;">Processing...</div>
+          <div id="info" class="status"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/txttospeechwt.js"></script>
+</body>
+</html>
