@@ -8,6 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const info = document.getElementById('info');
   const charCount = document.getElementById('charCount');
 
+  // Create output container for translated text
+  let outputDiv = document.getElementById('translatedOutput');
+  if (!outputDiv) {
+    outputDiv = document.createElement('div');
+    outputDiv.id = 'translatedOutput';
+    outputDiv.style.marginTop = '16px';
+    outputDiv.style.padding = '12px';
+    outputDiv.style.border = '1px solid #e2e8f0';
+    outputDiv.style.borderRadius = '8px';
+    outputDiv.style.background = '#f7fafc';
+    outputDiv.style.minHeight = '60px';
+    outputDiv.style.whiteSpace = 'pre-wrap';
+    outputDiv.style.fontSize = '15px';
+    outputDiv.style.color = '#1e293b';
+    speakBtn.parentElement.appendChild(outputDiv);
+  }
+
   // Character counter
   inputText.addEventListener('input', () => {
     charCount.textContent = `${inputText.value.length}/5000`;
@@ -25,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
     info.textContent = msg;
   }
 
+  function showTranslatedText(text) {
+    outputDiv.textContent = text;
+  }
+
   // Main click handler
   speakBtn.addEventListener('click', async () => {
     const text = inputText.value.trim();
@@ -38,9 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setLoading(true);
     showInfo('Translating...');
+    showTranslatedText(''); // clear previous translation
 
     try {
-      // 1) Call translate API (same as translator.js uses)
+      // 1) Call translate API
       const resp = await fetch('http://localhost:3000/translator/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,32 +81,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const detected = data.detected || null;
 
       showInfo(`Detected: ${detected || 'unknown'}. Speaking in ${to}.`);
+      showTranslatedText(translated); // display translated text in outputDiv
 
       // 2) Use Puter to convert the translated text to speech
-      // NOTE: If Puter supports passing language explicitly, include it in options,
-      // e.g. { engine, lang: to } — update if your Puter account/sdk expects a different key.
-      // Current usage mirrors your txttospeech.js: puter.ai.txt2speech(text, { engine })
       try {
         const audio = await puter.ai.txt2speech(translated, { engine /* , lang: to */ });
-        // play the returned audio object (your existing code does this)
         audio.play();
 
-        // small info update
         showInfo(`Playing translated text (${to}). Detected original: ${detected || 'unknown'}.`);
       } catch (ttsErr) {
         console.error('TTS error:', ttsErr);
         showInfo('Text-to-speech failed.');
       }
 
-      // Optionally: clear input if you want
-      // inputText.value = '';
-      // charCount.textContent = `${inputText.value.length}/5000`;
-
     } catch (err) {
       console.error('Error in translate->speak flow:', err);
       showInfo('Failed to connect to translation service.');
     } finally {
-      // hide loading after a short delay so user sees the status
       setTimeout(() => setLoading(false), 500);
     }
   });
