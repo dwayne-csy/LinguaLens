@@ -89,6 +89,19 @@
             border-color: #4299e1;
         }
         
+        /* Style for bookmarked options */
+        .language-select option[data-bookmarked="true"] {
+            background-color: #fff9e6;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .language-select option:disabled {
+            background: #e2e8f0;
+            color: #718096;
+            text-align: center;
+        }
+        
         .auto-detect-badge {
             background: #48bb78;
             color: white;
@@ -263,6 +276,25 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Bookmark Instructions -->
+    <div id="bookmarkInstructions" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #2d3748;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        max-width: 250px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+    ">
+        <strong>💡 Bookmark Tip:</strong><br>
+        Right-click any language to bookmark/unbookmark it!<br>
+        ⭐ = Bookmarked, ☆ = Not bookmarked
     </div>
 
     <script src="../js/translatorws.js"></script>

@@ -24,12 +24,16 @@ let currentDetectedInputLang = null; // Auto-detected input language
 let currentDetectedOutputLang = null; // Auto-detected output language
 let currentOutputText = '';
 
+// ✅ Bookmark functionality
+let bookmarkedLanguages = new Set();
+
 // ✅ Initialize the application
 function init() {
     console.log('Initializing translator...');
     
     if (initializeDOMElements()) {
-        populateLanguageDropdown();
+        loadBookmarkedLanguages();
+        createCustomDropdown();
         setupEventListeners();
         updateCharCount(); // Initialize character count
         console.log('Translator initialized successfully!');
@@ -75,21 +79,136 @@ function initializeDOMElements() {
     return true;
 }
 
-// ✅ Fill dropdown options automatically
-function populateLanguageDropdown() {
+// ✅ Load bookmarked languages from localStorage
+function loadBookmarkedLanguages() {
+    const saved = localStorage.getItem('bookmarkedLanguages');
+    if (saved) {
+        try {
+            const bookmarks = JSON.parse(saved);
+            bookmarkedLanguages = new Set(bookmarks);
+            console.log('Loaded bookmarked languages:', Array.from(bookmarkedLanguages));
+        } catch (e) {
+            console.error('Error loading bookmarks:', e);
+            bookmarkedLanguages = new Set();
+        }
+    }
+}
+
+// ✅ Save bookmarked languages to localStorage
+function saveBookmarkedLanguages() {
+    localStorage.setItem('bookmarkedLanguages', JSON.stringify(Array.from(bookmarkedLanguages)));
+}
+
+// ✅ Toggle bookmark for a language
+function toggleBookmark(langCode, starElement) {
+    const wasBookmarked = bookmarkedLanguages.has(langCode);
+    
+    if (wasBookmarked) {
+        bookmarkedLanguages.delete(langCode);
+        starElement.innerHTML = '☆';
+        starElement.style.color = '#a0aec0';
+        console.log('Unbookmarked:', langCode);
+    } else {
+        bookmarkedLanguages.add(langCode);
+        starElement.innerHTML = '⭐';
+        starElement.style.color = '#ffd700';
+        console.log('Bookmarked:', langCode);
+    }
+    
+    saveBookmarkedLanguages();
+    createCustomDropdown(); // Refresh dropdown to show new order
+    
+    // Show visual feedback
+    showBookmarkFeedback(langCode, !wasBookmarked);
+}
+
+// ✅ Show bookmark feedback
+function showBookmarkFeedback(langCode, wasBookmarked) {
+    const langName = supportedLanguages[langCode];
+    const message = wasBookmarked ? `⭐ ${langName} bookmarked!` : `❌ ${langName} unbookmarked!`;
+    
+    // Create temporary feedback element
+    const feedback = document.createElement('div');
+    feedback.textContent = message;
+    feedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${wasBookmarked ? '#48bb78' : '#e53e3e'};
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        z-index: 1000;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    
+    document.body.appendChild(feedback);
+    
+    // Remove after 2 seconds
+    setTimeout(() => {
+        if (feedback.parentNode) {
+            feedback.parentNode.removeChild(feedback);
+        }
+    }, 2000);
+}
+
+// ✅ Create custom dropdown with star icons
+function createCustomDropdown() {
     if (!langSelect) return;
     
+    // Store current selection
+    const currentSelection = langSelect.value;
+    
+    // Clear existing options
     langSelect.innerHTML = '';
     
+    // Create bookmarked and normal language arrays
+    const bookmarkedLangs = [];
+    const normalLangs = [];
+    
     Object.entries(supportedLanguages).forEach(([code, name]) => {
+        if (bookmarkedLanguages.has(code)) {
+            bookmarkedLangs.push({ code, name });
+        } else {
+            normalLangs.push({ code, name });
+        }
+    });
+    
+    // Add bookmarked languages first
+    bookmarkedLangs.forEach(({ code, name }) => {
         const option = document.createElement('option');
         option.value = code;
-        option.textContent = name;
+        option.textContent = `⭐ ${name}`;
+        option.setAttribute('data-bookmarked', 'true');
         langSelect.appendChild(option);
     });
     
-    // Set default to English
-    langSelect.value = 'en';
+    // Add separator if there are bookmarks and normal languages
+    if (bookmarkedLangs.length > 0 && normalLangs.length > 0) {
+        const separator = document.createElement('option');
+        separator.disabled = true;
+        separator.textContent = '────────────';
+        langSelect.appendChild(separator);
+    }
+    
+    // Add normal languages
+    normalLangs.forEach(({ code, name }) => {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = name;
+        option.setAttribute('data-bookmarked', 'false');
+        langSelect.appendChild(option);
+    });
+    
+    // Restore selection or set to first bookmark, or English
+    if (langSelect.querySelector(`option[value="${currentSelection}"]`)) {
+        langSelect.value = currentSelection;
+    } else if (bookmarkedLangs.length > 0) {
+        langSelect.value = bookmarkedLangs[0].code;
+    } else {
+        langSelect.value = 'en';
+    }
 }
 
 // ✅ Setup event listeners
@@ -118,12 +237,26 @@ function setupEventListeners() {
             translateText();
         }
     });
-    console.log('Added change event listener to langSelect');
     
     // Text-to-speech buttons
     speakInputBtn.addEventListener('click', () => speakText('input'));
     speakOutputBtn.addEventListener('click', () => speakText('output'));
     console.log('Added TTS event listeners');
+    
+    // Right-click context menu for bookmarking
+    langSelect.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const selectedLang = langSelect.value;
+        if (selectedLang) {
+            // Simulate star click for right-click
+            const isBookmarked = bookmarkedLanguages.has(selectedLang);
+            const fakeStar = {
+                innerHTML: isBookmarked ? '☆' : '⭐',
+                style: { color: isBookmarked ? '#a0aec0' : '#ffd700' }
+            };
+            toggleBookmark(selectedLang, fakeStar);
+        }
+    });
     
     console.log('Event listeners setup complete');
 }
@@ -336,6 +469,22 @@ async function speakText(type) {
         button.classList.remove('playing');
         alert('Text-to-speech failed. Please try again.');
     }
+}
+
+// ✅ Get current bookmarked languages (for debugging)
+function getBookmarkedLanguages() {
+    return Array.from(bookmarkedLanguages).map(code => ({
+        code,
+        name: supportedLanguages[code]
+    }));
+}
+
+// ✅ Clear all bookmarks (utility function)
+function clearAllBookmarks() {
+    bookmarkedLanguages.clear();
+    saveBookmarkedLanguages();
+    createCustomDropdown();
+    console.log('All bookmarks cleared');
 }
 
 // ✅ Initialize the app when DOM is loaded
