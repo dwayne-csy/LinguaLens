@@ -36,6 +36,8 @@ const profileRoutes = require('./routes/profile');
 const translateRoutes = require('./routes/translatewsRoutes');
 const translatorRoutes = require('./routes/translatorRoutes');
 const txtToSpeechRoutes = require('./routes/txttospeech'); // ✅ adjust path if needed
+const pictureToTextTranslatorRoutes = require('./routes/pictureToTextTranslatorRoutes');
+
 
 
 
@@ -55,6 +57,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api', translateRoutes);
 app.use('/translator', translatorRoutes);
 app.use('/api', txtToSpeechRoutes);
+app.use('/api/picturetotexttranslator', pictureToTextTranslatorRoutes);
 
 
 
