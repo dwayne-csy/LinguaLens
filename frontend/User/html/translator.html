@@ -34,11 +34,41 @@
             color: #2d3748;
             padding: 20px;
             text-align: center;
+            position: relative;
         }
         
         .header h1 {
             font-size: 24px;
             font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .speaker-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .speaker-button:hover {
+            background: #3182ce;
+            transform: scale(1.1);
+        }
+        
+        .speaker-button:active {
+            transform: scale(0.95);
         }
         
         .translation-area {
@@ -195,6 +225,14 @@
                 border-right: none;
                 border-bottom: 1px solid #e2e8f0;
             }
+            
+            .speaker-button {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 10px auto 0;
+                display: block;
+            }
         }
     </style>
 </head>
@@ -202,6 +240,9 @@
     <div class="translator-container">
         <div class="header">
             <h1>LinguaLens Translator</h1>
+            <button class="speaker-button" id="speakerBtn" title="Go to Speaker Version">
+                🔊
+            </button>
         </div>
         
         <div class="translation-area">
@@ -256,8 +297,7 @@
     ">
         <strong>💡 Bookmark Tip:</strong><br>
         Right-click any language to bookmark/unbookmark it!<br>
-        ⭐ = Bookmarked, 
-        ☆ = Not bookmarked
+        ⭐ = Bookmarked, ☆ = Not bookmarked
     </div>
 
     <script src="../js/translator.js"></script>

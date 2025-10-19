@@ -426,5 +426,20 @@ function clearAllBookmarks() {
     console.log('All bookmarks cleared');
 }
 
+// ✅ Speaker button functionality - navigate to translatorws.html
+function setupSpeakerButton() {
+    const speakerBtn = document.getElementById('speakerBtn');
+    if (speakerBtn) {
+        speakerBtn.addEventListener('click', () => {
+            console.log('Speaker button clicked - navigating to translatorws.html');
+            // Since both files are in the same directory, use direct filename
+            window.location.href = 'translatorws.html';
+        });
+    }
+}
+
 // ✅ Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+    init();
+    setupSpeakerButton();
+});

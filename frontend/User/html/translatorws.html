@@ -34,11 +34,41 @@
             color: #2d3748;
             padding: 20px;
             text-align: center;
+            position: relative;
         }
         
         .header h1 {
             font-size: 24px;
             font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-button:hover {
+            background: #3182ce;
+            transform: scale(1.1);
+        }
+        
+        .back-button:active {
+            transform: scale(0.95);
         }
         
         .translation-area {
@@ -79,6 +109,7 @@
             cursor: pointer;
             transition: border-color 0.3s ease;
             outline: none;
+            width: 100%;
         }
         
         .language-select:hover {
@@ -229,6 +260,14 @@
                 border-right: none;
                 border-bottom: 1px solid #e2e8f0;
             }
+            
+            .back-button {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin: 10px auto 0;
+                display: block;
+            }
         }
     </style>
 </head>
@@ -238,6 +277,9 @@
     <div class="translator-container">
         <div class="header">
             <h1>LinguaLens</h1>
+            <button class="back-button" id="backBtn" title="Go back to Basic Translator">
+                ←
+            </button>
         </div>
         
         <div class="translation-area">

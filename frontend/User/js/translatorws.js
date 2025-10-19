@@ -487,5 +487,22 @@ function clearAllBookmarks() {
     console.log('All bookmarks cleared');
 }
 
+// ✅ Back button functionality - navigate to translator.html
+function setupBackButton() {
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            console.log('Back button clicked - navigating to translator.html');
+            // Navigate back to the basic translator
+            window.location.href = 'translator.html';
+        });
+    } else {
+        console.error('Back button not found!');
+    }
+}
+
 // ✅ Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+    init();
+    setupBackButton();
+});
