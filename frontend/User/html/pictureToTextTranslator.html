@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Picture to Text Translator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f8fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .left-panel, .right-panel {
+      padding: 25px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .left-panel {
+      border-right: 1px solid #ddd;
+      background-color: #f0f4f8;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .arrow {
+      font-size: 80px;
+      color: #007bff;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+      text-align: center;
+    }
+
+    .arrow:hover {
+      transform: scale(1.1);
+      color: #0056b3;
+    }
+
+    .arrow.selected {
+      color: black !important;
+    }
+
+    #uploadForm {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    #imageInput {
+      display: none;
+    }
+
+    .language-section {
+      margin: 20px 0;
+      width: 100%;
+    }
+
+    .language-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    #languageSelect {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      background: white;
+    }
+
+    #uploadForm button {
+      padding: 12px 30px;
+      background-color: #007bff;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    #uploadForm button:hover {
+      background-color: #0056b3;
+    }
+
+    #uploadForm button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .result-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .result-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+
+    .result-label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .result-content {
+      flex: 1;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 150px;
+    }
+
+    .info-section {
+      background: #edf2f7;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #4a5568;
+    }
+
+    .info-item {
+      margin-bottom: 5px;
+    }
+
+    .history-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .history-btn img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0, 123, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #007bff;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .left-panel, .right-panel {
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        width: 100%;
+      }
+      .arrow {
+        font-size: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <div class="arrow" id="arrow">&#x2193;</div>
+      <form id="uploadForm">
+        <input type="file" name="image" id="imageInput" accept="image/*" required />
+        
+        <div class="language-section">
+          <label class="language-label" for="languageSelect">Translate to:</label>
+          <select id="languageSelect" class="language-select" required>
+            <!-- Languages will be populated by JavaScript -->
+          </select>
+        </div>
+
+        <button type="submit" id="submitBtn">
+          Upload, Extract & Translate
+        </button>
+      </form>
+    </div>
+
+    <div class="right-panel">
+      <button class="history-btn" onclick="window.location.href='picturetotexthistory.html'">
+        <img src="https://cdn-icons-png.flaticon.com/512/1827/1827392.png" alt="History">
+      </button>
+
+      <div class="result-section">
+        <div class="result-box">
+          <div class="result-label">Extracted Text:</div>
+          <div id="extractedResult" class="result-content">Extracted text will appear here...</div>
+        </div>
+
+        <div class="result-box">
+          <div class="result-label">Translated Text:</div>
+          <div id="translatedResult" class="result-content">Translated text will appear here...</div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-item" id="processingTime"></div>
+        <div class="info-item" id="languageInfo"></div>
+        <div class="info-item" id="confidenceInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/pictureToTextTranslator.js"></script>
+</body>
+</html>
+
+
